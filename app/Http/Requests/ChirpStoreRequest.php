@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Policies\ChirpPolicy;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
