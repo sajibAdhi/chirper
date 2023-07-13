@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ChirpStoreRequest;
 use App\Models\Chirp;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,15 +20,9 @@ class ChirpController extends Controller
      */
     public function index(): Response
     {
-        return Inertia::render('Chirps/Index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return Inertia::render('Chirps/Index', [
+            'chirps' => Chirp::with('user:id,name')->latest()->get(),
+        ]);
     }
 
     /**
@@ -40,18 +38,10 @@ class ChirpController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Chirp $chirp)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      * @throws AuthorizationException
      */
-    public function edit(Chirp $chirp)
+    public function edit(Chirp $chirp): View|Application|Factory
     {
         $this->authorize('update', $chirp);
 
@@ -77,8 +67,9 @@ class ChirpController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @throws AuthorizationException
      */
-    public function destroy(Chirp $chirp)
+    public function destroy(Chirp $chirp): Application|Redirector|RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         $this->authorize('delete', $chirp);
 
